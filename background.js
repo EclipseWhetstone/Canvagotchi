@@ -1,21 +1,23 @@
-const SUBMISSION_URL_PATTERNS = [
-  '*://*/*submit*',
-  '*://*/*assignment*',
-  '*://*/*upload*'
-];
+const CALENDAR_API = 'https://www.googleapis.com/calendar/v3/calendars/primary/events';
 
-chrome.webRequest.onCompleted.addListener(
-  (details) => {
-    chrome.storage.local.get(['submissions'], (result) => {
-      const count = (result.submissions || 0) + 1;
-      chrome.storage.local.set({ submissions: count });
-      
-      // Send message to content script
-      chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-        chrome.tabs.sendMessage(tabs[0].id, {type: 'submission', count});
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.type === 'getCalendarEvents') {
+    chrome.identity.getAuthToken({ interactive: true }, (token) => {
+      fetch(`${CALENDAR_API}?timeMin=${new Date().toISOString()}&singleEvents=true`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      .then(r => {
+        if (!r.ok) throw new Error('Calendar API failed');
+        return r.json();
+      })
+      .then(data => sendResponse({
+        events: data.items.filter(e => e.summary?.match(/assignment|homework/i))
+      }))
+      .catch(error => {
+        console.error('Calendar error:', error);
+        sendResponse({ error: 'Calendar unavailable' });
       });
     });
-  },
-  {urls: SUBMISSION_URL_PATTERNS},
-  ['responseHeaders']
-);
+    return true;
+  }
+});

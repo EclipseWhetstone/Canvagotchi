@@ -1,0 +1,133 @@
+/* CRT Monitor Effect */
+.crt-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10000;
+  background: 
+    linear-gradient(to bottom, 
+      rgba(18, 16, 16, 0.1) 50%,
+      transparent 50%),
+    radial-gradient(circle at 50% 50%, 
+      rgba(0,0,0,0) 60%,
+      rgba(0,0,0,0.3) 120%),
+    repeating-radial-gradient(circle at 50% 50%, 
+      rgba(0,0,0,0.1),
+      rgba(0,0,0,0.1) 2px,
+      transparent 2px,
+      transparent 4px);
+  background-size: 100% 4px, auto, auto;
+  animation: scanline 60s linear infinite;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+  mix-blend-mode: multiply;
+}
+
+/* Pixel Perfect Canvas */
+canvas {
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+  border: 4px solid #3a3a3a;
+  border-radius: 8px;
+  background: #1a1a1a;
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+/* Retro Color Palette */
+:root {
+  --crt-green: #92d4a7;
+  --retro-amber: #ffbf00;
+  --pixel-blue: #6b8cff;
+  --dark-tube: #2d2d2d;
+  --electric-purple: #bf00ff;
+}
+
+/* Assignment List */
+#assignments-list {
+  font-family: 'Press Start 2P', monospace;
+  color: var(--crt-green);
+  background: var(--dark-tube);
+  border: 3px solid #4a4a4a;
+  padding: 8px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.assignment-item {
+  margin: 8px 0;
+  padding: 4px;
+  border-bottom: 1px dashed #4a4a4a;
+}
+
+/* Checkboxes */
+input[type="checkbox"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--crt-green);
+  background: #000;
+  position: relative;
+  margin-right: 8px;
+}
+
+input[type="checkbox"]:checked {
+  background: var(--crt-green);
+  box-shadow: 0 0 8px var(--crt-green);
+}
+
+input[type="checkbox"]:checked::after {
+  content: '✓';
+  color: #000;
+  position: absolute;
+  left: 2px;
+  top: -2px;
+}
+
+/* Animations */
+@keyframes scanline {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 100%; }
+}
+
+@keyframes screen-flicker {
+  0% { opacity: 0.9; }
+  50% { opacity: 1; }
+  100% { opacity: 0.9; }
+}
+
+@keyframes power-on {
+  0% { transform: scaleY(0); }
+  80% { transform: scaleY(1.1); }
+  100% { transform: scaleY(1); }
+}
+
+/* Power-On Effect */
+.crt-overlay::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  animation: power-on 0.8s ease-out forwards;
+}
+
+/* Font Setup */
+@font-face {
+  font-family: 'Press Start 2P';
+  src: url('fonts/press-start-2p.woff2') format('woff2');
+  font-display: swap;
+}
+
+/* Base Styles */
+body {
+  animation: screen-flicker 0.1s infinite;
+  background: radial-gradient(circle, #1a1a1a 0%, #000 100%);
+  font-family: 'Press Start 2P';
+  margin: 0;
+  overflow: hidden;
+}
