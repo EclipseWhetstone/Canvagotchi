@@ -17,7 +17,9 @@ Movable Interface: Drag and drop the pet anywhere on the screen.
 Customization: Change your pet’s appearance and environment.
 
 Celebration Animations: Special effects for completing multiple assignments on time.
+
 Installation 🛠️
+
 Prerequisites
 Google Chrome browser.
 
